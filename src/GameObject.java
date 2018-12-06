@@ -5,6 +5,7 @@ public class GameObject {
 	int y;
 	int width;
 	int height;
+	int cameraY;
 	
 	public GameObject(int x, int y, int width, int height) {
 		this.x = x;
@@ -14,10 +15,10 @@ public class GameObject {
 	}
 	
 	void update() {
-		y+=5;
+		
 	}
 	
-	void draw(Graphics g) {
-		g.fillRect(x, y, width, height);
+	void draw(Graphics g, int cameraY) {
+		
 	}
 }
