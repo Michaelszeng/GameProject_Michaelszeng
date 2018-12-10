@@ -1,7 +1,17 @@
 
 public class Camera {
-	int cameraY = 0;
-	public Camera(int x, int y) {
-		
+	int y = 0;
+	int speed;
+	public Camera() {
+		speed = 2;
+	}
+	
+	void update() {
+		y+=speed;
+	}
+	
+	public int getY() {
+		return y;
 	}
 }
+

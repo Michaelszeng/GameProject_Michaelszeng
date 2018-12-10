@@ -17,8 +17,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	int currentState = MENU_STATE;
 	Font titleFont;
 	Font normalFont;
-	Camera camera = new Camera(0, 0);
+	Camera camera = new Camera();
 	Jumper jumper = new Jumper(250, 600, 50, 50);
+	ObjectManager objectManager = new ObjectManager();
 	
 	public GamePanel() {
 		timer = new Timer(1000 / 60, this);
@@ -53,7 +54,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	void drawGameState(Graphics g) {
 		g.setColor(new Color(40, 0, 40));
 		g.fillRect(0,  0,  Game.width, Game.height);
-		jumper.draw(g, cameraY);
+		jumper.draw(g, camera.y);
+		objectManager.draw(g, camera.y);
 	}
 	
 	void drawEndState(Graphics g) {
@@ -62,7 +64,10 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	}
 	
 	void updateGameState() {
+		camera.update();
 		jumper.update();
+		objectManager.update();
+		objectManager.managePlatforms();
 	}
 	
 	void startGame() {

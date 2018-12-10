@@ -35,6 +35,6 @@ public class Jumper extends GameObject{
 	
 	void draw(Graphics g, int cameraY) {
 		g.setColor(Color.WHITE);
-		g.fillRect(x, y-cameraY, width, height);
+		g.fillRect(x, y+cameraY, width, height);
 	}
 }
