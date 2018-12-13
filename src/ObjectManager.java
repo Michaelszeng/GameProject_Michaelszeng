@@ -4,11 +4,21 @@ import java.util.Random;
 
 public class ObjectManager {
 	ArrayList<Platform> platforms = new ArrayList<Platform>();
+	StartPlatform startPlatform;
+	Jumper jumper;
 	long platformTimer = 0;
 	int platformSpawnTime = 1000;
 	int platformY = 0;
 	int platformSpawnSpeed = 100;
-
+	long startPlatformTimer = 0;
+	int startPlatformMoveTime = 3000;
+	
+	public ObjectManager(StartPlatform startPlatform, Jumper jumper) {
+		this.startPlatform = startPlatform;
+		this.jumper = jumper;
+		startPlatformTimer = System.currentTimeMillis();
+	}
+	
 	void addPlatform(Platform p) {
 		platforms.add(p);
 	}
@@ -17,11 +27,16 @@ public class ObjectManager {
 		for (int i = 0; i < platforms.size(); i++) {
 			platforms.get(i).draw(g, cameraY);
 		}
+		if (startPlatform.isAlive != false) {
+			startPlatform.draw(g);
+		}
 	}
 	
 	void update() {
-		for (int i = 0; i < platforms.size(); i++) {
-			platforms.get(i).update();
+		if (startPlatform.isAlive != false) {
+			for (int i = 0; i < platforms.size(); i++) {
+				platforms.get(i).update();
+			}
 		}
 	}
 	
@@ -33,6 +48,21 @@ public class ObjectManager {
 			platformY-=platformSpawnSpeed;
 			platformSpawnSpeed = platformSpawnSpeed+15;
 			platformTimer = System.currentTimeMillis();
+		}
+	}
+	
+	void eraseObjects() {
+		if (System.currentTimeMillis() - startPlatformTimer >= startPlatformMoveTime) {
+			startPlatform.isAlive = false;
+			startPlatformTimer = System.currentTimeMillis();
+		}
+	}
+	
+	void checkCollision() {
+		if ((jumper.x+jumper.width>startPlatform.x) && (jumper.x<startPlatform.x+startPlatform.width)) {
+			if ((jumper.y+jumper.height <= startPlatform.y) && (jumper.y+jumper.height >= startPlatform.y-5)) {
+				jumper.y = startPlatform.y;
+			}
 		}
 	}
 }

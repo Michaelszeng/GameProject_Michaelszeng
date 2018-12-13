@@ -18,8 +18,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	Font titleFont;
 	Font normalFont;
 	Camera camera = new Camera();
-	Jumper jumper = new Jumper(250, 600, 50, 50);
-	ObjectManager objectManager = new ObjectManager();
+	Jumper jumper = new Jumper(225, 600, 50, 50);
+	StartPlatform startPlatform = new StartPlatform(Game.width/2-100, 550, 200, 10);
+	ObjectManager objectManager = new ObjectManager(startPlatform, jumper);
 	
 	public GamePanel() {
 		timer = new Timer(1000 / 60, this);
@@ -68,6 +69,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		jumper.update();
 		objectManager.update();
 		objectManager.managePlatforms();
+		objectManager.eraseObjects();
+		objectManager.checkCollision();
 	}
 	
 	void startGame() {
@@ -110,14 +113,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			jumper.up = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			jumper.down = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			jumper.right = false;
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			jumper.left = false;
+		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+			jumper.jump();
 		}
 	}
 

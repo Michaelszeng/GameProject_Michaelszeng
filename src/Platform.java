@@ -15,7 +15,7 @@ public class Platform extends GameObject {
 	}
 	
 	void draw(Graphics g, int cameraY) {
-		g.setColor(new Color(225, 171, 81));
+		g.setColor(new Color(255, 178, 20));
 		g.fillRect(x, y+cameraY, width, height);
 	}
 	
