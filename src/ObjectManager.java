@@ -11,7 +11,7 @@ public class ObjectManager {
 	int platformY = 0;
 	int platformSpawnSpeed = 100;
 	long startPlatformTimer = 0;
-	int startPlatformMoveTime = 3000;
+	int startPlatformMoveTime = 6000;
 	
 	public ObjectManager(StartPlatform startPlatform, Jumper jumper) {
 		this.startPlatform = startPlatform;
@@ -28,7 +28,7 @@ public class ObjectManager {
 			platforms.get(i).draw(g, cameraY);
 		}
 		if (startPlatform.isAlive != false) {
-			startPlatform.draw(g);
+			startPlatform.draw(g, cameraY);
 		}
 	}
 	
@@ -38,13 +38,14 @@ public class ObjectManager {
 				platforms.get(i).update();
 			}
 		}
+		startPlatform.update();
 	}
 	
 	public void managePlatforms() {
 		if (System.currentTimeMillis() - platformTimer >= platformSpawnTime) {
 			Random ran = new Random();
 			int platformSize = ran.nextInt(45)+55;
-			addPlatform(new Platform(new Random().nextInt(Game.width), platformY, platformSize, 10));
+			addPlatform(new Platform(new Random().nextInt(Game.width-platformSize), platformY, platformSize, 10));
 			platformY-=platformSpawnSpeed;
 			platformSpawnSpeed = platformSpawnSpeed+15;
 			platformTimer = System.currentTimeMillis();
@@ -54,14 +55,22 @@ public class ObjectManager {
 	void eraseObjects() {
 		if (System.currentTimeMillis() - startPlatformTimer >= startPlatformMoveTime) {
 			startPlatform.isAlive = false;
+			startPlatform.x = 99999;
 			startPlatformTimer = System.currentTimeMillis();
 		}
 	}
 	
 	void checkCollision() {
-		if ((jumper.x+jumper.width>startPlatform.x) && (jumper.x<startPlatform.x+startPlatform.width)) {
-			if ((jumper.y+jumper.height <= startPlatform.y) && (jumper.y+jumper.height >= startPlatform.y-5)) {
-				jumper.y = startPlatform.y;
+		if (jumper.collisionBox.intersects(startPlatform.collisionBox)) {
+			jumper.yLimit = startPlatform.y;
+			System.out.println("hi");
+		}
+		else {
+			jumper.yLimit = 500;
+		}
+		for (Platform p : platforms) {
+			if (jumper.collisionBox.intersects(p.collisionBox)) {
+				jumper.yLimit = p.y;
 			}
 		}
 	}

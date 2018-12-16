@@ -98,14 +98,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		}
 		
 		if (currentState == GAME_STATE) {
-			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				jumper.up = true;
-			} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				jumper.down = true;
-			} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				jumper.right = true;
 			} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 				jumper.left = true;
+			} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				jumper.jump();
 			}
 		}
 	}
@@ -117,8 +115,6 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 			jumper.right = false;
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			jumper.left = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			jumper.jump();
 		}
 	}
 

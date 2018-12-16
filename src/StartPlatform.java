@@ -8,11 +8,12 @@ public class StartPlatform extends GameObject{
 	}
 	
 	void update() {
+		y-=2;
 		super.update();
 	}
 	
-	void draw(Graphics g) {
+	void draw(Graphics g, int CameraY) {
 		g.setColor(new Color(155, 108, 10));
-		g.fillRect(x, y-cameraY, width, height);
+		g.fillRect(x, y+CameraY, width, height);
 	}
 }
