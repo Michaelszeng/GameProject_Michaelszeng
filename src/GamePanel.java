@@ -15,17 +15,19 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
 	int currentState = MENU_STATE;
-	Font titleFont;
-	Font normalFont;
+	Font titleFont, normalFont, scoreFont, mediumFont;
 	Camera camera = new Camera();
 	Jumper jumper = new Jumper(225, 600, 50, 50);
 	StartPlatform startPlatform = new StartPlatform(Game.width/2-100, 550, 200, 10);
 	ObjectManager objectManager = new ObjectManager(startPlatform, jumper);
+	long score;
 	
 	public GamePanel() {
 		timer = new Timer(1000 / 60, this);
 		titleFont = new Font("Ubuntu", Font.BOLD, 56);
 		normalFont = new Font("Ubuntu", Font.PLAIN, 24);
+		scoreFont = new Font("Ubuntu", Font.PLAIN, 18);
+		mediumFont = new Font("Ubuntu", Font.PLAIN, 32);
 	}
 	
 	@Override
@@ -34,7 +36,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		if (currentState == MENU_STATE) {
 			drawMenuState(g);
 		} else if (currentState == GAME_STATE) {
-			drawGameState(g);
+			drawGameState(g, score);
 		} else if (currentState == END_STATE) {
 			drawEndState(g);
 		}
@@ -50,18 +52,38 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		g.setFont(normalFont);
 		int instructionsWidth = g.getFontMetrics(normalFont).stringWidth("Press Enter To Start");
 		g.drawString("Press Enter To Start", (int) ((Game.width/2)-(instructionsWidth/2)), (int) (Game.height*0.5));
-	}
+		/*jumper.y = 0;
+		camera.y = 0;
+		for (int i = 0; i < objectManager.platforms.size(); i++) {
+			objectManager.platforms.remove(i);
+		}*/
+		}
 	
-	void drawGameState(Graphics g) {
+	void drawGameState(Graphics g, long score) {
+		score = this.score;
+		score = jumper.y*-1;
 		g.setColor(new Color(40, 0, 40));
 		g.fillRect(0,  0,  Game.width, Game.height);
 		jumper.draw(g, camera.y);
 		objectManager.draw(g, camera.y);
+		g.setColor(new Color(245, 245, 245));
+		g.setFont(scoreFont);
+		g.drawString("Score: " + score, (int) (Game.width*0.05), (int) (Game.height*0.045));
 	}
 	
 	void drawEndState(Graphics g) {
 		g.setColor(new Color(99, 4, 4));
 		g.fillRect(0,  0,  Game.width, Game.height);
+		g.setColor(new Color(255, 255, 220));
+		g.setFont(titleFont);
+		int titleWidth = g.getFontMetrics(titleFont).stringWidth("You Died!");
+		g.drawString("You Died!", (int) ((Game.width/2)-(titleWidth/2)), (int) (Game.height*0.4));
+		g.setFont(normalFont);
+		int instructionsWidth = g.getFontMetrics(normalFont).stringWidth("Press Enter To Return to Menu");
+		g.drawString("Press Enter To Return To Menu", (int) ((Game.width/2)-(instructionsWidth/2)), (int) (Game.height*0.675));
+		g.setFont(mediumFont);
+		int scoreWidth = g.getFontMetrics(mediumFont).stringWidth("Score: " + score);
+		g.drawString("Score: " + score, (int) ((Game.width/2)-(scoreWidth/2)), (int) (Game.height*0.525));
 	}
 	
 	void updateGameState() {
@@ -69,8 +91,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		jumper.update();
 		objectManager.update();
 		objectManager.managePlatforms();
-		objectManager.eraseObjects();
-		objectManager.checkCollision();
+		objectManager.eraseObjects(camera.y);
+		objectManager.checkCollision(score);
+		if (jumper.isAlive == false) {
+			currentState = END_STATE;
+		}
 	}
 	
 	void startGame() {
@@ -88,9 +113,6 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			if (currentState == MENU_STATE) {
 				currentState = GAME_STATE;
-			}
-			else if (currentState == GAME_STATE) {
-				currentState = END_STATE;
 			}
 			else if (currentState == END_STATE) {
 				currentState = MENU_STATE;

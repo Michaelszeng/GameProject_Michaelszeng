@@ -10,6 +10,8 @@ public class Jumper extends GameObject{
 	int jumpPower = 28;
 	int yLimit = 500;
 	boolean canJump = false;
+	int privateY;
+	
 	public Jumper(int x, int y, int width, int height) {
 		super(x, y, width, height);
 		speed = 5;
@@ -33,8 +35,9 @@ public class Jumper extends GameObject{
 		
 		yVelocity += gravity;
 		y += yVelocity;
+		privateY += yVelocity-gravity;
 		
-		if(y >= yLimit){
+		if(y >= yLimit) {
 			y = yLimit;
 			yVelocity = 0;
 			canJump = true;

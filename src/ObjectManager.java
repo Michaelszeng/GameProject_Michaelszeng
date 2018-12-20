@@ -1,6 +1,9 @@
 import java.awt.Graphics;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.swing.ToolTipManager;
 
 public class ObjectManager {
 	ArrayList<Platform> platforms = new ArrayList<Platform>();
@@ -11,7 +14,7 @@ public class ObjectManager {
 	int platformY = 0;
 	int platformSpawnSpeed = 100;
 	long startPlatformTimer = 0;
-	int startPlatformMoveTime = 6000;
+	int startPlatformMoveTime = 4250;
 	
 	public ObjectManager(StartPlatform startPlatform, Jumper jumper) {
 		this.startPlatform = startPlatform;
@@ -52,18 +55,31 @@ public class ObjectManager {
 		}
 	}
 	
-	void eraseObjects() {
+	void eraseObjects(int cameraY) {
 		if (System.currentTimeMillis() - startPlatformTimer >= startPlatformMoveTime) {
 			startPlatform.isAlive = false;
 			startPlatform.x = 99999;
 			startPlatformTimer = System.currentTimeMillis();
 		}
+		if (jumper.y*-1 <= cameraY-800) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			jumper.isAlive = false;
+		}
+		for (int i = 0; i < platforms.size(); i++) {
+			if (platforms.get(i).y >= 499) {
+				platforms.get(i).isAlive = false;
+			}
+		}
 	}
 	
-	void checkCollision() {
+	void checkCollision(long score) {
 		if (jumper.collisionBox.intersects(startPlatform.collisionBox)) {
 			jumper.yLimit = startPlatform.y;
-			System.out.println("hi");
 		}
 		else {
 			jumper.yLimit = 500;
