@@ -50,7 +50,9 @@ public class ObjectManager {
 			int platformSize = ran.nextInt(45)+55;
 			addPlatform(new Platform(new Random().nextInt(Game.width-platformSize), platformY, platformSize, 10));
 			platformY-=platformSpawnSpeed;
-			platformSpawnSpeed = platformSpawnSpeed+15;
+			if (platformSpawnSpeed < 350) {
+				platformSpawnSpeed = platformSpawnSpeed+15;
+			}
 			platformTimer = System.currentTimeMillis();
 		}
 	}
@@ -77,7 +79,7 @@ public class ObjectManager {
 		}
 	}
 	
-	void checkCollision(long score) {
+	void checkCollision(int score) {
 		if (jumper.collisionBox.intersects(startPlatform.collisionBox)) {
 			jumper.yLimit = startPlatform.y;
 		}

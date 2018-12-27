@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	Jumper jumper = new Jumper(225, 600, 50, 50);
 	StartPlatform startPlatform = new StartPlatform(Game.width/2-100, 550, 200, 10);
 	ObjectManager objectManager = new ObjectManager(startPlatform, jumper);
-	long score;
+	int score;
 	
 	public GamePanel() {
 		timer = new Timer(1000 / 60, this);
@@ -36,7 +36,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		if (currentState == MENU_STATE) {
 			drawMenuState(g);
 		} else if (currentState == GAME_STATE) {
-			drawGameState(g, score);
+			drawGameState(g);
 		} else if (currentState == END_STATE) {
 			drawEndState(g);
 		}
@@ -59,9 +59,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		}*/
 		}
 	
-	void drawGameState(Graphics g, long score) {
-		score = this.score;
-		score = jumper.y*-1;
+	void drawGameState(Graphics g) {
+		System.out.println(jumper.y);
+		score = (jumper.y*-1)+600-camera.y/10;
 		g.setColor(new Color(40, 0, 40));
 		g.fillRect(0,  0,  Game.width, Game.height);
 		jumper.draw(g, camera.y);
@@ -122,6 +122,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		if (currentState == GAME_STATE) {
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				jumper.right = true;
+				jumper.xTimer = System.currentTimeMillis();
 			} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 				jumper.left = true;
 			} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -135,6 +136,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		// TODO Auto-generated method stub
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			jumper.right = false;
+			jumper.afterRight = true;
+			/*
+			int decel = 0;
+			for (int i=0; i < 4; i++) {
+				decel += jumper.xVelocity/4;
+				jumper.x += decel;
+			}
+			*/
 		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			jumper.left = false;
 		}

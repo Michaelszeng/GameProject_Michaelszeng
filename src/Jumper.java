@@ -3,14 +3,16 @@ import java.awt.Graphics;
 
 public class Jumper extends GameObject{
 	int speed;
-	boolean up, down, right, left = false;
+	boolean up, down, right, left, afterRight = false;
 	int xVelocity = 8;
 	int yVelocity = 0;
 	int gravity = 1;
+	int xGravity = 2;
 	int jumpPower = 28;
 	int yLimit = 500;
 	boolean canJump = false;
 	int privateY;
+	long xTimer = 0;
 	
 	public Jumper(int x, int y, int width, int height) {
 		super(x, y, width, height);
@@ -27,7 +29,30 @@ public class Jumper extends GameObject{
 	void update() {
 		super.update();
 		if (right) {
+			/*
+			if (System.currentTimeMillis() - xTimer > 800) {
+				x += xVelocity * 1.25;
+			}
+			else if (System.currentTimeMillis() - xTimer > 600) {
+				x += xVelocity * 0.875;
+			}
+			else if (System.currentTimeMillis() - xTimer > 400) {
+				x += xVelocity * 0.75;
+			}
+			else if (System.currentTimeMillis() - xTimer > 200) {
+				x += xVelocity * 0.675;
+			}
+			else {
+				x += xVelocity * 0.5;
+			}
+			*/
 			x += xVelocity;
+		}
+		if (afterRight) {
+			if (xVelocity > 0 ) {
+				x += xVelocity;
+				xVelocity -= xGravity;
+			}
 		}
 		if (left) {
 			x -= xVelocity;
