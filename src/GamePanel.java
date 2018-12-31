@@ -19,7 +19,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	Camera camera = new Camera();
 	Jumper jumper = new Jumper(225, 600, 50, 50);
 	StartPlatform startPlatform = new StartPlatform(Game.width/2-100, 550, 200, 10);
-	ObjectManager objectManager = new ObjectManager(startPlatform, jumper);
+	ObjectManager objectManager;
 	int score;
 	
 	public GamePanel() {
@@ -52,6 +52,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		g.setFont(normalFont);
 		int instructionsWidth = g.getFontMetrics(normalFont).stringWidth("Press Enter To Start");
 		g.drawString("Press Enter To Start", (int) ((Game.width/2)-(instructionsWidth/2)), (int) (Game.height*0.5));
+		objectManager = new ObjectManager(startPlatform, jumper);
+		objectManager.platformSpawnSpeed = 175;
+		jumper.isAlive = true;
+		jumper.y = 600;
+		jumper.x = 225;
+		startPlatform.isAlive = true;
+		startPlatform.x = Game.width/2-100;
+		score = (jumper.y*-1)+600-camera.y/10;
 		/*jumper.y = 0;
 		camera.y = 0;
 		for (int i = 0; i < objectManager.platforms.size(); i++) {
@@ -60,7 +68,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		}
 	
 	void drawGameState(Graphics g) {
-		System.out.println(jumper.y);
+		objectManager.startPlatformTimer++;
+		objectManager.platformTimer++;
+		//System.out.println(jumper.y);
 		score = (jumper.y*-1)+600-camera.y/10;
 		g.setColor(new Color(40, 0, 40));
 		g.fillRect(0,  0,  Game.width, Game.height);
@@ -136,7 +146,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		// TODO Auto-generated method stub
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			jumper.right = false;
-			jumper.afterRight = true;
+			
 			/*
 			int decel = 0;
 			for (int i=0; i < 4; i++) {

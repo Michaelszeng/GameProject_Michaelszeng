@@ -12,14 +12,13 @@ public class ObjectManager {
 	long platformTimer = 0;
 	int platformSpawnTime = 1000;
 	int platformY = 0;
-	int platformSpawnSpeed = 100;
+	int platformSpawnSpeed = 175;
 	long startPlatformTimer = 0;
-	int startPlatformMoveTime = 4250;
+	int startPlatformMoveTime = 10000;
 	
 	public ObjectManager(StartPlatform startPlatform, Jumper jumper) {
 		this.startPlatform = startPlatform;
 		this.jumper = jumper;
-		startPlatformTimer = System.currentTimeMillis();
 	}
 	
 	void addPlatform(Platform p) {
@@ -45,12 +44,12 @@ public class ObjectManager {
 	}
 	
 	public void managePlatforms() {
-		if (System.currentTimeMillis() - platformTimer >= platformSpawnTime) {
+		if (platformTimer*60 >= platformSpawnTime) {
 			Random ran = new Random();
 			int platformSize = ran.nextInt(45)+55;
 			addPlatform(new Platform(new Random().nextInt(Game.width-platformSize), platformY, platformSize, 10));
 			platformY-=platformSpawnSpeed;
-			if (platformSpawnSpeed < 350) {
+			if (platformSpawnSpeed < 335) {
 				platformSpawnSpeed = platformSpawnSpeed+15;
 			}
 			platformTimer = System.currentTimeMillis();
@@ -58,7 +57,7 @@ public class ObjectManager {
 	}
 	
 	void eraseObjects(int cameraY) {
-		if (System.currentTimeMillis() - startPlatformTimer >= startPlatformMoveTime) {
+		if (startPlatformTimer*60 >= startPlatformMoveTime) {
 			startPlatform.isAlive = false;
 			startPlatform.x = 99999;
 			startPlatformTimer = System.currentTimeMillis();

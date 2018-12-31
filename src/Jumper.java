@@ -4,14 +4,13 @@ import java.awt.Graphics;
 public class Jumper extends GameObject{
 	int speed;
 	boolean up, down, right, left, afterRight = false;
-	int xVelocity = 8;
+	int xVelocity = 0;
 	int yVelocity = 0;
 	int gravity = 1;
-	int xGravity = 2;
+	int xGravity = 1;
 	int jumpPower = 28;
 	int yLimit = 500;
 	boolean canJump = false;
-	int privateY;
 	long xTimer = 0;
 	
 	public Jumper(int x, int y, int width, int height) {
@@ -29,44 +28,32 @@ public class Jumper extends GameObject{
 	void update() {
 		super.update();
 		if (right) {
-			/*
-			if (System.currentTimeMillis() - xTimer > 800) {
-				x += xVelocity * 1.25;
-			}
-			else if (System.currentTimeMillis() - xTimer > 600) {
-				x += xVelocity * 0.875;
-			}
-			else if (System.currentTimeMillis() - xTimer > 400) {
-				x += xVelocity * 0.75;
-			}
-			else if (System.currentTimeMillis() - xTimer > 200) {
-				x += xVelocity * 0.675;
-			}
-			else {
-				x += xVelocity * 0.5;
-			}
-			*/
-			x += xVelocity;
+			xVelocity=10;
 		}
-		if (afterRight) {
-			if (xVelocity > 0 ) {
-				x += xVelocity;
-				xVelocity -= xGravity;
-			}
-		}
+//		if (afterRight) {
+//			if (xVelocity > 0 ) {
+//				x += xVelocity;
+//				xVelocity -= xGravity;
+//			}
+//		}
+//		if (xVelocity <= 0) {
+//			afterRight = false;
+//		}
 		if (left) {
-			x -= xVelocity;
+			xVelocity=-10;
 		}
-		
+		System.out.println("xv:"+xVelocity);
+		x += xVelocity;
 		yVelocity += gravity;
 		y += yVelocity;
-		privateY += yVelocity-gravity;
-		
+
+		xVelocity*=.9;
 		if(y >= yLimit) {
 			y = yLimit;
 			yVelocity = 0;
 			canJump = true;
 		}
+		
 	}
 	
 	void draw(Graphics g, int cameraY) {
