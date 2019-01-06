@@ -42,7 +42,6 @@ public class Jumper extends GameObject{
 		if (left) {
 			xVelocity=-10;
 		}
-		System.out.println("xv:"+xVelocity);
 		x += xVelocity;
 		yVelocity += gravity;
 		y += yVelocity;

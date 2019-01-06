@@ -14,6 +14,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	final int MENU_STATE = 0;
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
+	final int INSTRUCTIONS_STATE = 3;
 	int currentState = MENU_STATE;
 	Font titleFont, normalFont, scoreFont, mediumFont;
 	Camera camera = new Camera();
@@ -57,9 +58,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		jumper.isAlive = true;
 		jumper.y = 600;
 		jumper.x = 225;
+		jumper.yLimit = 500;
 		startPlatform.isAlive = true;
 		startPlatform.x = Game.width/2-100;
+		startPlatform.y = 550;
 		score = (jumper.y*-1)+600-camera.y/10;
+		camera.y = 0;
 		/*jumper.y = 0;
 		camera.y = 0;
 		for (int i = 0; i < objectManager.platforms.size(); i++) {
@@ -68,9 +72,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		}
 	
 	void drawGameState(Graphics g) {
+		System.out.println(camera.y);
 		objectManager.startPlatformTimer++;
 		objectManager.platformTimer++;
-		//System.out.println(jumper.y);
 		score = (jumper.y*-1)+600-camera.y/10;
 		g.setColor(new Color(40, 0, 40));
 		g.fillRect(0,  0,  Game.width, Game.height);
@@ -126,6 +130,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 			}
 			else if (currentState == END_STATE) {
 				currentState = MENU_STATE;
+			}
+		}
+		
+		if (currentState == MENU_STATE) {
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				currentState = INSTRUCTIONS_STATE;
 			}
 		}
 		

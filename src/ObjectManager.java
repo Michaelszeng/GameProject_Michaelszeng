@@ -81,13 +81,20 @@ public class ObjectManager {
 	void checkCollision(int score) {
 		if (jumper.collisionBox.intersects(startPlatform.collisionBox)) {
 			jumper.yLimit = startPlatform.y;
+			
 		}
+		/*
+		if (camera.y<300) && (jumper.collisionBox.intersects(null)) {
+			jumper.y+=jumper.yVelocity;
+		}
+		*/
 		else {
-			jumper.yLimit = 500;
+			jumper.yLimit = 1000;
 		}
 		for (Platform p : platforms) {
 			if (jumper.collisionBox.intersects(p.collisionBox)) {
 				jumper.yLimit = p.y;
+				System.out.println("intersecting");
 			}
 		}
 	}
