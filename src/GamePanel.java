@@ -5,7 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -18,10 +21,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	int currentState = MENU_STATE;
 	Font titleFont, normalFont, scoreFont, mediumFont;
 	Camera camera = new Camera();
-	Jumper jumper = new Jumper(225, 600, 50, 50);
+	Jumper jumper = new Jumper(205, 600, 90, 90);
 	StartPlatform startPlatform = new StartPlatform(Game.width/2-100, 550, 200, 10);
 	ObjectManager objectManager;
 	int score;
+	public static BufferedImage characterImg;
 	
 	public GamePanel() {
 		timer = new Timer(1000 / 60, this);
@@ -29,6 +33,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		normalFont = new Font("Ubuntu", Font.PLAIN, 24);
 		scoreFont = new Font("Ubuntu", Font.PLAIN, 18);
 		mediumFont = new Font("Ubuntu", Font.PLAIN, 32);
+		try {
+            characterImg = ImageIO.read(this.getClass().getResourceAsStream("pc.png"));
+    } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+    }
 	}
 	
 	@Override
@@ -36,6 +46,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	public void paintComponent(Graphics g){
 		if (currentState == MENU_STATE) {
 			drawMenuState(g);
+		} else if (currentState == INSTRUCTIONS_STATE) {
+			drawInstructionsState(g);
 		} else if (currentState == GAME_STATE) {
 			drawGameState(g);
 		} else if (currentState == END_STATE) {
@@ -53,6 +65,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		g.setFont(normalFont);
 		int instructionsWidth = g.getFontMetrics(normalFont).stringWidth("Press Enter To Start");
 		g.drawString("Press Enter To Start", (int) ((Game.width/2)-(instructionsWidth/2)), (int) (Game.height*0.5));
+		g.setFont(normalFont);
+		int enterInstructionsWidth = g.getFontMetrics(normalFont).stringWidth("Press Space To See Instructions");
+		g.drawString("Press Space To See Instructions", (int) ((Game.width/2)-(enterInstructionsWidth/2)), (int) (Game.height*0.6));
 		objectManager = new ObjectManager(startPlatform, jumper);
 		objectManager.platformSpawnSpeed = 175;
 		jumper.isAlive = true;
@@ -71,8 +86,23 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		}*/
 		}
 	
+	void drawInstructionsState(Graphics g) {
+		g.setColor(new Color(95, 30, 95));
+		g.fillRect(0,  0,  Game.width, Game.height);
+		g.setColor(new Color(255, 255, 255));
+		g.setFont(normalFont);
+		int jumpWidth = g.getFontMetrics(normalFont).stringWidth("Press Space To Jump");
+		g.drawString("Press Space To Jump", (int) ((Game.width/2)-(jumpWidth/2)), (int) (Game.height*0.375));
+		int moveWidth = g.getFontMetrics(normalFont).stringWidth("Press ArrowKeys To Move Right/Left");
+		g.drawString("Press ArrowKeys To Move Right/Left", (int) ((Game.width/2)-(moveWidth/2)), (int) (Game.height*0.4375));
+		int points = g.getFontMetrics(normalFont).stringWidth("Don't Fall!");
+		g.drawString("Don't Fall!", (int) ((Game.width/2)-(points/2)), (int) (Game.height*0.5));
+		int returnWidth = g.getFontMetrics(normalFont).stringWidth("Press Space To Return To Menu");
+		g.drawString("Press Space To Return To Menu", (int) ((Game.width/2)-(returnWidth/2)), (int) (Game.height*0.8));
+		
+	}
+	
 	void drawGameState(Graphics g) {
-		System.out.println(camera.y);
 		objectManager.startPlatformTimer++;
 		objectManager.platformTimer++;
 		score = (jumper.y*-1)+600-camera.y/10;
@@ -136,6 +166,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		if (currentState == MENU_STATE) {
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 				currentState = INSTRUCTIONS_STATE;
+			}
+		}
+		
+		else if (currentState == INSTRUCTIONS_STATE) {
+			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				currentState = MENU_STATE;
 			}
 		}
 		

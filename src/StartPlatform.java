@@ -8,7 +8,7 @@ public class StartPlatform extends GameObject{
 	}
 	
 	void update() {
-		y-=2;
+		y-=4;
 		super.update();
 	}
 	

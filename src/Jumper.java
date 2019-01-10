@@ -14,8 +14,11 @@ public class Jumper extends GameObject{
 	long xTimer = 0;
 	
 	public Jumper(int x, int y, int width, int height) {
-		super(x, y, width, height);
+		super(x, y, width, height-15);
 		speed = 5;
+		collisionBox.width-=40;
+		collisionBox.y+=10;
+		
 	}
 	
 	public void jump(){
@@ -27,9 +30,12 @@ public class Jumper extends GameObject{
 	
 	void update() {
 		super.update();
+		collisionBox.width-=40;
+		collisionBox.y+=10;
 		if (right) {
 			xVelocity=10;
 		}
+		//failed attempts of decel
 //		if (afterRight) {
 //			if (xVelocity > 0 ) {
 //				x += xVelocity;
@@ -47,8 +53,8 @@ public class Jumper extends GameObject{
 		y += yVelocity;
 
 		xVelocity*=.9;
-		if(y >= yLimit) {
-			y = yLimit;
+		if(y >= yLimit-16) {
+			y = yLimit-16;
 			yVelocity = 0;
 			canJump = true;
 		}
@@ -56,9 +62,9 @@ public class Jumper extends GameObject{
 	}
 	
 	void draw(Graphics g, int cameraY) {
-		g.setColor(Color.WHITE);
-		g.fillRect(x, y+cameraY-52, width, height);
-		g.setColor(new Color(255, 178, 20));
-		g.fillRect(width/2-250, y+height, 100, 10);
+		g.drawImage(GamePanel.characterImg, x-20, y+cameraY-51, width, height, null);
+		g.setColor(Color.RED);
+		//uncomment below to see jumper's collision box
+		//g.drawRect(collisionBox.x, collisionBox.y+cameraY, collisionBox.width, collisionBox.height);
 	}
 }

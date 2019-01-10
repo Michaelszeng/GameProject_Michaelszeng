@@ -14,7 +14,7 @@ public class ObjectManager {
 	int platformY = 0;
 	int platformSpawnSpeed = 175;
 	long startPlatformTimer = 0;
-	int startPlatformMoveTime = 10000;
+	int startPlatformMoveTime = 4500;
 	
 	public ObjectManager(StartPlatform startPlatform, Jumper jumper) {
 		this.startPlatform = startPlatform;
@@ -83,18 +83,12 @@ public class ObjectManager {
 			jumper.yLimit = startPlatform.y;
 			
 		}
-		/*
-		if (camera.y<300) && (jumper.collisionBox.intersects(null)) {
-			jumper.y+=jumper.yVelocity;
-		}
-		*/
 		else {
 			jumper.yLimit = 1000;
 		}
 		for (Platform p : platforms) {
 			if (jumper.collisionBox.intersects(p.collisionBox)) {
 				jumper.yLimit = p.y;
-				System.out.println("intersecting");
 			}
 		}
 	}
