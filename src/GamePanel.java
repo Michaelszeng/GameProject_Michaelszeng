@@ -26,6 +26,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	ObjectManager objectManager;
 	int score;
 	public static BufferedImage characterImg;
+	int r = 40;
+	int gColor = 0;
+	int b = 40;
 	
 	public GamePanel() {
 		timer = new Timer(1000 / 60, this);
@@ -49,7 +52,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		} else if (currentState == INSTRUCTIONS_STATE) {
 			drawInstructionsState(g);
 		} else if (currentState == GAME_STATE) {
-			drawGameState(g);
+			drawGameState(g, r, gColor, b);
 		} else if (currentState == END_STATE) {
 			drawEndState(g);
 		}
@@ -79,6 +82,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		startPlatform.y = 550;
 		score = (jumper.y*-1)+600-camera.y/10;
 		camera.y = 0;
+		camera.speed = 5;
 		/*jumper.y = 0;
 		camera.y = 0;
 		for (int i = 0; i < objectManager.platforms.size(); i++) {
@@ -95,18 +99,20 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		g.drawString("Press Space To Jump", (int) ((Game.width/2)-(jumpWidth/2)), (int) (Game.height*0.375));
 		int moveWidth = g.getFontMetrics(normalFont).stringWidth("Press ArrowKeys To Move Right/Left");
 		g.drawString("Press ArrowKeys To Move Right/Left", (int) ((Game.width/2)-(moveWidth/2)), (int) (Game.height*0.4375));
-		int points = g.getFontMetrics(normalFont).stringWidth("Don't Fall!");
-		g.drawString("Don't Fall!", (int) ((Game.width/2)-(points/2)), (int) (Game.height*0.5));
+		int down = g.getFontMetrics(normalFont).stringWidth("Press Down Arrow To Fall");
+		g.drawString("Press Down Arrow To Fall", (int) ((Game.width/2)-(down/2)), (int) (Game.height*0.5));
+		int fast = g.getFontMetrics(normalFont).stringWidth("ACT FAST!!!");
+		g.drawString("ACT FAST!!!", (int) ((Game.width/2)-(fast/2)), (int) (Game.height*0.5625));
 		int returnWidth = g.getFontMetrics(normalFont).stringWidth("Press Space To Return To Menu");
 		g.drawString("Press Space To Return To Menu", (int) ((Game.width/2)-(returnWidth/2)), (int) (Game.height*0.8));
 		
 	}
 	
-	void drawGameState(Graphics g) {
+	void drawGameState(Graphics g, int r, int gColor, int b) {
 		objectManager.startPlatformTimer++;
 		objectManager.platformTimer++;
 		score = (jumper.y*-1)+600-camera.y/10;
-		g.setColor(new Color(40, 0, 40));
+		g.setColor(new Color(r, gColor, b));
 		g.fillRect(0,  0,  Game.width, Game.height);
 		jumper.draw(g, camera.y);
 		objectManager.draw(g, camera.y);
@@ -139,6 +145,15 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		objectManager.checkCollision(score);
 		if (jumper.isAlive == false) {
 			currentState = END_STATE;
+		}
+		if ((score>4000) && (camera.speed <= 5)) {
+			camera.speed+=1;
+		}
+		if ((score>7500) && (camera.speed <= 6)) {
+			camera.speed+=1;
+		}
+		if ((score>12000) && (camera.speed <= 7)) {
+			camera.speed+=1;
 		}
 	}
 	
@@ -183,6 +198,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 				jumper.left = true;
 			} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 				jumper.jump();
+			} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				jumper.gravity += 1;
 			}
 		}
 	}
@@ -192,15 +209,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		// TODO Auto-generated method stub
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			jumper.right = false;
-			
-			/*
-			int decel = 0;
-			for (int i=0; i < 4; i++) {
-				decel += jumper.xVelocity/4;
-				jumper.x += decel;
-			}
-			*/
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			jumper.gravity = 1;
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			jumper.left = false;
 		}
 	}

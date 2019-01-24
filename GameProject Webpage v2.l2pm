@@ -1,0 +1,29 @@
+*<*GAMETITLE*>*
+Jump!
+*<*NAME*>*
+Michael Zeng
+*<*LINK*>*
+
+*<*IMAGES*>*
+*<*ENDALLIMAGES*>*
+*<*FONT*>*
+Roboto
+*<*COLORS*>*
+95
+40
+63
+*<*QUESTIONS*>*
+Inspired by Doodle Jump and the Super Mario line of video games, I decided I wanted to create an intense, fast-paced, character-based jumping game. I took similar, but more random platforms as Doodle Jump, implemented jumping mechanics similar to Mario, and added an aspect where you battle the screen itself which is moving upwards relative to the jumper character. Mario and Doodle Jump are both amazing fun games which I've played and enjoyed, and have simplistic aspects which I could implement into my own game.
+*<*ENDQUESTION*>*
+
+*<*ENDQUESTION*>*
+To create my game, I created several classes, all of which collaborated in some way to make every aspect of the game work out. I had an overall game class, which set up some of the essentials such as the JFrame, GamePanel and started the game. The GamePanel class accounted for most of the actions; it controlled the different stages of the game, and created every character and put them together. The ObjectManager class controlled all of the objects, which each had their individual classes too to control their individual mechanics. Finally, there is the GameObject class, which universalizes some of the parameters for each individual object, and creates hit-boxes. These classes interacted with each other in various ways; the object class extend the GameObject class in order to borrow universal attributes, all the objects are managed in the ObjectManager class and created and reset in the GamePanel class. These different classes make the programming process cleaner, tidier, and much easier to debug.
+*<*ENDQUESTION*>*
+Figuring out how to program certain mechanics, most notably the jumper character's jumping and deceleration mechanics was certainly a technical aspect to be proud of. I faced challenges in implementing both; I went through several iterations of making the jumper decelerate in order to make work or make it smoother, and the jumping mechanic took a lot of time to figure out. Just trying different methods, testing specific parts of each mechanic, and sometimes getting guidance from teachers, I was able to make it all work, and smoothly.
+*<*ENDQUESTION*>*
+The most challenging part of this project was connecting all the classes and learning how they interact. I borrowed some examples from previous recipes I followed, and getting to understand exactly why I did what I did was difficult, though also very important. Through some guidance, and simply pausing to read and think, helped me through this process.
+*<*ENDQUESTION*>*
+In the future, some things I would improve would be to incrementally increase the difficulty of the game, without it ever becoming impossible. This exists in the game to some degree, though the transitions are choppy, and after a certain point the difficulty no longer increases. Also, I think better graphics would add to the game, although this is more graphical design than programming. Something like in Jetpack Joyride, in which the background changes to indicate the level and progress of the user, would be nice to add.
+*<*ENDQUESTION*>*
+*<*CUSTOMTOPICS*>*
+*#*EOF*#*
