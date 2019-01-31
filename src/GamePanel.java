@@ -1,4 +1,5 @@
 import java.awt.Color;
+
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -7,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -19,7 +21,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	final int END_STATE = 2;
 	final int INSTRUCTIONS_STATE = 3;
 	int currentState = MENU_STATE;
-	Font titleFont, normalFont, scoreFont, mediumFont;
+	Font titleFont, normalFont, scoreFont, mediumFont, smallFont, boldNormalFont;
 	Camera camera = new Camera();
 	Jumper jumper = new Jumper(205, 600, 90, 90);
 	StartPlatform startPlatform = new StartPlatform(Game.width/2-100, 550, 200, 10);
@@ -29,13 +31,32 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	int r = 40;
 	int gColor = 0;
 	int b = 40;
+	long colorTimer;
+	int colorInterval = 0;
+	int colorMultiplier = 1;
+	int rFactor = 3;
+	int gFactor = 2;
+	int bFactor = 1;
+	Random rand = new Random();
+	boolean fastMode = true;
+	int initialSpeed = 4;
+	String mode = "Easy";
 	
 	public GamePanel() {
+		/*
+		if (fastMode == true) {
+			initialSpeed = 5;
+			mode = "Hard";
+		}
+		*/
 		timer = new Timer(1000 / 60, this);
+		colorTimer = System.currentTimeMillis();
 		titleFont = new Font("Ubuntu", Font.BOLD, 56);
 		normalFont = new Font("Ubuntu", Font.PLAIN, 24);
+		boldNormalFont = new Font("Ubuntu", Font.BOLD, 32);
 		scoreFont = new Font("Ubuntu", Font.PLAIN, 18);
 		mediumFont = new Font("Ubuntu", Font.PLAIN, 32);
+		smallFont = new Font("Ubuntu", Font.PLAIN, 16);
 		try {
             characterImg = ImageIO.read(this.getClass().getResourceAsStream("pc.png"));
     } catch (IOException e) {
@@ -70,7 +91,13 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		g.drawString("Press Enter To Start", (int) ((Game.width/2)-(instructionsWidth/2)), (int) (Game.height*0.5));
 		g.setFont(normalFont);
 		int enterInstructionsWidth = g.getFontMetrics(normalFont).stringWidth("Press Space To See Instructions");
-		g.drawString("Press Space To See Instructions", (int) ((Game.width/2)-(enterInstructionsWidth/2)), (int) (Game.height*0.6));
+		g.drawString("Press Space To See Instructions", (int) ((Game.width/2)-(enterInstructionsWidth/2)), (int) (Game.height*0.55));
+		g.setFont(boldNormalFont);
+		int modeWidth = g.getFontMetrics(boldNormalFont).stringWidth("Mode: hard");
+		g.drawString("Mode: " + mode, (int) ((Game.width/2)-(modeWidth/2)), (int) (Game.height*0.625));
+		g.setFont(smallFont);
+		int changeModeWidth = g.getFontMetrics(smallFont).stringWidth("Press Up To Change Modes");
+		g.drawString("Press Up To Change Modes", (int) ((Game.width/2)-(changeModeWidth/2)), (int) (Game.height*0.65));
 		objectManager = new ObjectManager(startPlatform, jumper);
 		objectManager.platformSpawnSpeed = 175;
 		jumper.isAlive = true;
@@ -82,7 +109,16 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		startPlatform.y = 550;
 		score = (jumper.y*-1)+600-camera.y/10;
 		camera.y = 0;
-		camera.speed = 5;
+		camera.speed = initialSpeed;
+		r = 40;
+		gColor = 0;
+		b = 40;
+		if (mode == "Hard") {
+			fastMode = true;
+		}
+		else {
+			fastMode = false;
+		}
 		/*jumper.y = 0;
 		camera.y = 0;
 		for (int i = 0; i < objectManager.platforms.size(); i++) {
@@ -91,7 +127,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		}
 	
 	void drawInstructionsState(Graphics g) {
-		g.setColor(new Color(95, 30, 95));
+		g.setColor(new Color(95, 15, 55));
 		g.fillRect(0,  0,  Game.width, Game.height);
 		g.setColor(new Color(255, 255, 255));
 		g.setFont(normalFont);
@@ -99,12 +135,17 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		g.drawString("Press Space To Jump", (int) ((Game.width/2)-(jumpWidth/2)), (int) (Game.height*0.375));
 		int moveWidth = g.getFontMetrics(normalFont).stringWidth("Press ArrowKeys To Move Right/Left");
 		g.drawString("Press ArrowKeys To Move Right/Left", (int) ((Game.width/2)-(moveWidth/2)), (int) (Game.height*0.4375));
-		int down = g.getFontMetrics(normalFont).stringWidth("Press Down Arrow To Fall");
-		g.drawString("Press Down Arrow To Fall", (int) ((Game.width/2)-(down/2)), (int) (Game.height*0.5));
-		int fast = g.getFontMetrics(normalFont).stringWidth("ACT FAST!!!");
-		g.drawString("ACT FAST!!!", (int) ((Game.width/2)-(fast/2)), (int) (Game.height*0.5625));
+		int down = g.getFontMetrics(normalFont).stringWidth("Press Down To Fall Fast");
+		g.drawString("Press Down To Fall Fast", (int) ((Game.width/2)-(down/2)), (int) (Game.height*0.5));
+		int hint = g.getFontMetrics(smallFont).stringWidth("hint: this may be useful in the beginning!");
+		g.setFont(smallFont);
+		g.drawString("hint: this may be useful in the beginning!", (int) ((Game.width/2)-(hint/2)), (int) (Game.height*0.525));
+		int fast = g.getFontMetrics(boldNormalFont).stringWidth("ACT FAST!!!");
+		g.setFont(boldNormalFont);
+		g.drawString("ACT FAST!!!", (int) ((Game.width/2)-(fast/2)), (int) (Game.height*0.6));
 		int returnWidth = g.getFontMetrics(normalFont).stringWidth("Press Space To Return To Menu");
-		g.drawString("Press Space To Return To Menu", (int) ((Game.width/2)-(returnWidth/2)), (int) (Game.height*0.8));
+		g.setFont(normalFont);
+		g.drawString("Press Space To Return To Menu", (int) ((Game.width/2)-(returnWidth/2)), (int) (Game.height*0.9));
 		
 	}
 	
@@ -137,6 +178,34 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	}
 	
 	void updateGameState() {
+		System.out.println(camera.speed);
+		colorInterval+=1;
+		if ((System.currentTimeMillis() - colorTimer > 6000) && (colorInterval%16 == 0)) {
+			rFactor = rand.nextInt(4)+1;
+			rFactor = rand.nextInt(4)+0;
+			rFactor = rand.nextInt(3)-1;
+			r = r + (3*colorMultiplier);
+			gColor = gColor + (2*colorMultiplier);
+			b = b + (1*colorMultiplier);
+			if (r<5) {
+				colorMultiplier = 1;
+			}
+			else if (r>210){
+				colorMultiplier = -1;
+			}
+			if (gColor<5) {
+				colorMultiplier = 1;
+			}
+			else if (gColor>210){
+				colorMultiplier = -1;
+			}
+			if (b<5) {
+				colorMultiplier = 1;
+			}
+			else if (b>210){
+				colorMultiplier = -1;
+			}
+		}
 		camera.update();
 		jumper.update();
 		objectManager.update();
@@ -146,14 +215,22 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		if (jumper.isAlive == false) {
 			currentState = END_STATE;
 		}
-		if ((score>4000) && (camera.speed <= 5)) {
+		if ((score>2500) && (camera.speed <= initialSpeed)) {
+			camera.speed=initialSpeed+1;
+		}
+		/*
+		if ((score>3000) && (camera.speed <= 4)) {
 			camera.speed+=1;
 		}
-		if ((score>7500) && (camera.speed <= 6)) {
-			camera.speed+=1;
+		*/
+		if ((score>4000) && (camera.speed <= initialSpeed+1)) {
+			camera.speed=initialSpeed+2;
 		}
-		if ((score>12000) && (camera.speed <= 7)) {
-			camera.speed+=1;
+		if ((score>7500) && (camera.speed <= initialSpeed+2)) {
+			camera.speed=initialSpeed+3;
+		}
+		if ((score>12000) && (camera.speed <= initialSpeed+3)) {
+			camera.speed=initialSpeed+4;
 		}
 	}
 	
@@ -181,6 +258,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		if (currentState == MENU_STATE) {
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 				currentState = INSTRUCTIONS_STATE;
+			}
+			else if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (mode == "Hard") {
+					mode = "Easy";
+				}
+				else {
+					mode = "Hard";
+				}
 			}
 		}
 		
