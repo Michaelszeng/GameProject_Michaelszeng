@@ -43,12 +43,6 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	String mode = "Easy";
 	
 	public GamePanel() {
-		/*
-		if (fastMode == true) {
-			initialSpeed = 5;
-			mode = "Hard";
-		}
-		*/
 		timer = new Timer(1000 / 60, this);
 		colorTimer = System.currentTimeMillis();
 		titleFont = new Font("Ubuntu", Font.BOLD, 56);
@@ -80,6 +74,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 	}
 	
 	void drawMenuState(Graphics g) {
+		if (fastMode == true) {
+			initialSpeed = 5;
+			mode = "Hard";
+		}
+		else {
+			initialSpeed = 4;
+			mode = "Easy";
+		}
 		g.setColor(new Color(55, 0, 55));
 		g.fillRect(0,  0,  Game.width, Game.height);
 		g.setColor(new Color(255, 226, 193));
@@ -177,7 +179,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		g.drawString("Score: " + score, (int) ((Game.width/2)-(scoreWidth/2)), (int) (Game.height*0.525));
 	}
 	
-	void updateGameState() {
+	void updateGameState(int initialSpeed) {
+		this.initialSpeed = initialSpeed;
 		System.out.println(camera.speed);
 		colorInterval+=1;
 		if ((System.currentTimeMillis() - colorTimer > 6000) && (colorInterval%16 == 0)) {
@@ -262,9 +265,11 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 			else if (e.getKeyCode() == KeyEvent.VK_UP) {
 				if (mode == "Hard") {
 					mode = "Easy";
+					fastMode = false;
 				}
 				else {
 					mode = "Hard";
+					fastMode = true;
 				}
 			}
 		}
@@ -308,7 +313,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener{
 		// TODO Auto-generated method stub
 		repaint();
 		if (currentState == GAME_STATE) {
-			updateGameState();
+			updateGameState(initialSpeed);
 		}
 	}
 
